@@ -5,6 +5,24 @@ function Backup-XMLAndJARFiles {
     )
 
     try {
+        # Check if all source folders exist
+        foreach ($sourceFolder in $SourceFolders) {
+            if (-not (Test-Path $sourceFolder -PathType Container)) {
+                Write-Host "Destination folder does not exist: $sourceFolder"
+                #throw "Source folder does not exist: $sourceFolder"
+                exit 1
+            }
+        }
+
+        # Check if all destination folders exist
+        foreach ($destinationFolder in $DestinationFolders) {
+            if (-not (Test-Path $destinationFolder -PathType Container)) {
+                Write-Host "Destination folder does not exist: $destinationFolder"
+                #throw "Destination folder does not exist: $destinationFolder"
+                exit 1
+            }
+        }
+
         # Loop through each pair of source and destination folders
         for ($i = 0; $i -lt $SourceFolders.Count; $i++) {
             $SourceFolder = $SourceFolders[$i]
@@ -76,8 +94,8 @@ function Backup-XMLAndJARFiles {
 }
 
 # Define source and destination folder paths as arrays
-$sourceFolders = @("C:\sanchita\Rollback\digipay1")
-$destinationFolders = @("F:\sanchita\Rollback\digipay1\Backup1")
+$sourceFolders = @("F:\sanchita\Rollback\digipay1")
+$destinationFolders = @("F:\sanchita\Rollback\Backup")
 
 # Call the function to backup XML and JAR files without timestamp and create a folder with timestamp
 Backup-XMLAndJARFiles -SourceFolders $sourceFolders -DestinationFolders $destinationFolders
