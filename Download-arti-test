@@ -22,45 +22,45 @@ $fileUrls = @(
 $destination = "F:\sanchita\Rollback\digipay1"
 New-Item -ItemType Directory -Force -Path $destination | Out-Null
 
-$versions = @(
-    "<+stage.variables.Container>",
-    "<+stage.variables.Tokenisation>",
-    "<+stage.variables.DataVault>",
-    "<+stage.variables.KeyRegistry>",
-    "<+stage.variables.BinService>",
-    "<+stage.variables.NotificationService>",
-    "<+stage.variables.AdminService>",
-    "<+stage.variables.AuthService>",
-    "<+stage.variables.TillAPIGateway>",
-    "<+stage.variables.AdminConsole>"
-)
+$versions = @{
+    "container-ws-war" = "<+stage.variables.Container>"
+    "tokenisation" = "<+stage.variables.Tokenisation>"
+    "data-vault" = "<+stage.variables.DataVault>"
+    "key-registry-ws" = "<+stage.variables.KeyRegistry>"
+    "binservice" = "<+stage.variables.BinService>"
+    "notification" = "<+stage.variables.NotificationService>"
+    "adminservices" = "<+stage.variables.AdminService>"
+    "authservice-application" = "<+stage.variables.AuthService>"
+    "till-api-gateway" = "<+stage.variables.TillAPIGateway>"
+    "admin-console" = "<+stage.variables.AdminConsole>"
+}
 
 $artifactDownloaded = $false
-
-Write-Host "Versions: $versions"
 
 foreach ($url in $fileUrls) {
     $fileName = [System.IO.Path]::GetFileName($url)
     
-    foreach ($version in $versions) {
-        Write-Host "Checking $fileName for version $version"
-        if ($fileName -like "*$version*") {
-            $destinationPath = Join-Path -Path $destination -ChildPath $fileName
-            try {
-                Invoke-WebRequest -Uri $url -OutFile $destinationPath -Credential $Credential -ErrorAction Stop
-                Write-Host "Downloaded $fileName"
-                $artifactDownloaded = $true
-                break
-            } catch {
-                Write-Host "Skipping $fileName."
-            }
-        } 
+    if ($versions.ContainsKey($fileName)) {
+        $version = $versions[$fileName]
+        $destinationPath = Join-Path -Path $destination -ChildPath $fileName
+        try {
+            Invoke-WebRequest -Uri $url -OutFile $destinationPath -Credential $Credential -ErrorAction Stop
+            Write-Host "Downloaded $fileName"
+            $artifactDownloaded = $true
+        } catch {
+            Write-Host "Skipping $fileName."
+        }
+    } else {
+        Write-Host "No version provided for $fileName. Skipping."
     }
 }
 
 if (-not $artifactDownloaded) {
     throw "Error: No artifact was downloaded. Please provide a valid version."
 }
+
+
+
 
 
 
