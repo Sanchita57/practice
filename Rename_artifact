@@ -1,0 +1,15 @@
+$folderPath = "F:\DigiPay\lib"
+$files = Get-ChildItem -Path $folderPath
+Write-Host ""
+Write-Host "Renaming..."
+Start-Sleep -Seconds 2
+
+# Loop 
+foreach ($file in $files) {
+    $fileNameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($file.FullName)
+    $fileNameWithoutVersion = $fileNameWithoutExtension -replace '-\d+(\.\d+)*', ''
+    $extension = $file.Extension
+    $newFileName = $fileNameWithoutVersion + $extension
+    Rename-Item -Path $file.FullName -NewName $newFileName -Force
+    Write-Host "File name changed from $($file.Name) to $newFileName"
+}
