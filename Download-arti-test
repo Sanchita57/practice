@@ -37,10 +37,13 @@ $versions = @(
 
 $artifactDownloaded = $false
 
+Write-Host "Versions: $versions"
+
 foreach ($url in $fileUrls) {
     $fileName = [System.IO.Path]::GetFileName($url)
     
     foreach ($version in $versions) {
+        Write-Host "Checking $fileName for version $version"
         if ($fileName -like "*$version*") {
             $destinationPath = Join-Path -Path $destination -ChildPath $fileName
             try {
@@ -58,3 +61,8 @@ foreach ($url in $fileUrls) {
 if (-not $artifactDownloaded) {
     throw "Error: No artifact was downloaded. Please provide a valid version."
 }
+
+
+
+  
+                
