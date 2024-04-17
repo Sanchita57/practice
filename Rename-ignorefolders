@@ -1,0 +1,30 @@
+$folderPath = "F:\DigiPay\lib"
+$files = Get-ChildItem -Path $folderPath
+Write-Host ""
+Write-Host "Renaming..."
+Start-Sleep -Seconds 2
+
+# Loop through each file
+foreach ($file in $files) {
+    # Check if the item is a directory (folder), skip if it is
+    if ($file.Attributes -band [System.IO.FileAttributes]::Directory) {
+        Write-Host "Skipping folder $($file.Name)"
+        continue
+    }
+    
+    # Check if the item is a zip file
+    if ($file.Extension -eq ".zip") {
+        # Handle zip files differently, for example, by extracting them
+        Write-Host "Processing zip file $($file.Name)"
+        # Add your code here to handle zip files, e.g., extracting them
+        continue
+    }
+
+    # Process regular files
+    $fileNameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($file.FullName)
+    $fileNameWithoutVersion = $fileNameWithoutExtension -replace '-\d+(\.\d+)*', ''
+    $extension = $file.Extension
+    $newFileName = $fileNameWithoutVersion + $extension
+    Rename-Item -Path $file.FullName -NewName $newFileName -Force
+    Write-Host "File name changed from $($file.Name) to $newFileName"
+}
