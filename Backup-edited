@@ -1,0 +1,28 @@
+function Backup-XMLAndJARFiles {
+    param (
+        [string[]]$SourceFolders,
+        [string[]]$DestinationFolders
+    )
+
+    try {
+        # Check if all source folders exist
+        foreach ($sourceFolder in $SourceFolders) {
+            if (-not (Test-Path $sourceFolder -PathType Container)) {
+                throw "Source folder does not exist: $sourceFolder"
+            }
+        }
+
+        # Check if all destination folders exist
+        foreach ($destinationFolder in $DestinationFolders) {
+            if (-not (Test-Path $destinationFolder -PathType Container)) {
+                throw "Destination folder does not exist: $destinationFolder"
+            }
+        }
+
+        # Rest of the script remains the same
+        # Loop through each pair of source and destination folders
+        for ($i = 0; $i -lt $SourceFolders.Count; $i++) {
+            $SourceFolder = $SourceFolders[$i]
+            $DestinationFolder = $DestinationFolders[$i]
+
+            # Rest of the script continues...
